@@ -1,0 +1,4 @@
+MC102;Algoritmos e programacao de computadores;Ementa de MC102;CB06;10:00
+MC202;Estruturas de Dados;Ementa de MC202;CB04;14:00
+MC302;Programacao orientada a objetos;Ementa de MC302;CB12;8:00
+MC404;Linguagem de Montagem;Ementa de MC404;CB02;16:00
