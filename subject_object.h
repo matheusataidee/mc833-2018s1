@@ -25,7 +25,7 @@ struct course {
 
 subject* create_subject(char *code, char *title, char *program, char *classroom, char *class_time);
 
-course* read(char *file_name);
+course* readCourse(char *file_name);
 
 char* getAllSubjects(course *course_);
 

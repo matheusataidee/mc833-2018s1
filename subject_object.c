@@ -17,7 +17,7 @@ subject* create_subject(char *code, char *title, char *program, char *classroom,
   return ret;
 }
 
-course* read(char *file_name) {
+course* readCourse(char *file_name) {
   subject **subjects;
   course *course_;
   course_ = (course *)malloc(sizeof(course));
