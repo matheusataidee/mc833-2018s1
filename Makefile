@@ -1,15 +1,25 @@
 CC=gcc
 
+default: clean base server client
+	
+
 clean:
 	@rm -v -f subject_object.o
-
-clean_server: clean
+	@rm -v -f parser.o
+	@rm -v -f client.o
 	@rm -v -f server.o
+	@rm -v -f client
 	@rm -v -f server
 
-base_server: clean_server
+base:
 	$(CC) -c subject_object.c
+	$(CC) -c parser.c
 	
-server: base_server
+server: 
 	$(CC) -c server.c
-	$(CC) subject_object.o server.o -o server
+	$(CC) parser.o subject_object.o server.o -o server
+
+client:
+	$(CC) -c client.c
+	$(CC) parser.o subject_object.o client.o -o client
+	

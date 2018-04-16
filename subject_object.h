@@ -23,7 +23,7 @@ struct course {
   subject **subjects;
 };
 
-subject* create_subject(char *code, char *title, char *program, char *classroom, char *class_time);
+subject* createSubject(char *code, char *title, char *program, char *classroom, char *class_time);
 
 course* readCourse(char *file_name);
 

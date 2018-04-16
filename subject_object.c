@@ -1,6 +1,6 @@
 #include "subject_object.h"
 
-subject* create_subject(char *code, char *title, char *program, char *classroom, char *class_time) {
+subject* createSubject(char *code, char *title, char *program, char *classroom, char *class_time) {
   subject *ret = (subject *)malloc(sizeof(subject));
   
   ret->code = (char *)malloc((strlen(code) + 1) * sizeof(char));
@@ -50,7 +50,7 @@ course* readCourse(char *file_name) {
       }
     }
     
-    subjects[it] = create_subject(s[0], s[1], s[2], s[3], s[4]);
+    subjects[it] = createSubject(s[0], s[1], s[2], s[3], s[4]);
     
     free(s);
     it++;
@@ -87,9 +87,11 @@ char* getProgramByCode(course *course_, char *given_code) {
     if (strcmp(given_code, course_->subjects[i]->code) == 0) {
       ret = (char *)(malloc((strlen(course_->subjects[i]->program) + 1) * sizeof(char)));
       strcpy(ret, course_->subjects[i]->program);
-      break;
+      return ret;
     }
   }
+  ret = (char *)(malloc(80 * sizeof(char)));
+  sprintf(ret, "Materia %s nao existe.\n", given_code);
   return ret;
 }
 
@@ -111,9 +113,11 @@ char* getAllInfoByCode(course *course_, char *given_code) {
       strcat(ret, course_->subjects[i]->classroom);
       strcat(ret, ";");
       strcat(ret, course_->subjects[i]->class_time);
-      break;
+      return ret;
     }
   }
+  ret = (char *)(malloc(80 * sizeof(char)));
+  sprintf(ret, "Materia %s nao existe.\n", given_code);
   return ret;
 }
 
@@ -154,8 +158,10 @@ char* getCommentbyCode(course *course_, char *given_code) {
         ret = (char *)(malloc(5 * sizeof(char)));
         strcpy(ret, "NULL");
       }
-      break;
+      return ret;
     }
   }
+  ret = (char *)(malloc(80 * sizeof(char)));
+  sprintf(ret, "Materia %s nao existe.\n", given_code);
   return ret;
 }

@@ -9,42 +9,52 @@
 #include <netinet/in.h> 
 #include <sys/time.h> //FD_SET, FD_ISSET, FD_ZERO macros 
 #include "subject_object.h"
+#include "parser.h"
 
 #define TRUE   1 
 #define FALSE  0 
 #define PORT 8888 
 
+char* handleNewMessage(request *req, course *course_) {
+  char *ret;
+  switch (req->id) {
+    case 1:
+      ret = getAllSubjects(course_);
+      break;
+    case 2:
+      ret = getProgramByCode(course_, req->code);
+      break;
+    case 3:
+      ret = getAllInfoByCode(course_, req->code);
+      break;
+    case 4:
+      ret = getEveryInfo(course_);
+      break;
+    case 5:
+      writeComment(course_, req->code, req->comment);
+      ret = (char *)(malloc(500 * sizeof(char)));
+      sprintf(ret, "Comentario '%s' adicionado com sucesso para a materia %s.", req->comment, req->code);
+      break;
+    case 6:
+      ret = getCommentbyCode(course_, req->code);
+      break;
+  }
+  return ret;
+}
+
 int main() {
   course *course_ = readCourse("materias.txt");
-  for (int i = 0; i < course_->n_subjects; i++) {
-    printf("%s %s %s %s %s\n", course_->subjects[i]->code, course_->subjects[i]->title, course_->subjects[i]->program, course_->subjects[i]->classroom, course_->subjects[i]->class_time);
-  }
-  char *s = getAllSubjects(course_);
-  printf("%s\n", s);
-  s = getProgramByCode(course_, "MC202");
-  printf("%s\n", s);
-  s = getAllInfoByCode(course_, "MC404");
-  printf("%s\n", s);
-  s = getEveryInfo(course_);
-  printf("%s\n", s);
-  writeComment(course_, "MC102", "fala galerinhaaa");
-  s = getCommentbyCode(course_, "MC102");
-  printf("%s\n", s);
-  
-  
+
   int opt = TRUE;  
   int master_socket , addrlen , new_socket , client_socket[30] , 
         max_clients = 30 , activity, i , valread , sd;  
   int max_sd;  
   struct sockaddr_in address;  
       
-  char buffer[1025];  //data buffer of 1K 
+  char buffer[2049];  //data buffer of 2K 
       
   //set of socket descriptors 
   fd_set readfds;  
-      
-  //a message 
-  char *message = "ECHO Daemon v1.0 \r\n";  
   
   //initialise all client_socket[] to 0 so not checked 
   for (i = 0; i < max_clients; i++)  
@@ -139,14 +149,6 @@ int main() {
           //inform user of socket number - used in send and receive commands 
           printf("New connection , socket fd is %d , ip is : %s , port : %d\n" , new_socket , inet_ntoa(address.sin_addr) , ntohs
                 (address.sin_port));  
-        
-          //send new connection greeting message 
-          if( send(new_socket, message, strlen(message), 0) != strlen(message) )  
-          {  
-              perror("send");  
-          }  
-              
-          puts("Welcome message sent successfully");  
               
           //add new socket to array of sockets 
           for (i = 0; i < max_clients; i++)  
@@ -171,7 +173,7 @@ int main() {
           {  
               //Check if it was for closing , and also read the 
               //incoming message 
-              if ((valread = read( sd , buffer, 1024)) <= 0)  
+              if ((valread = read( sd , buffer, 2048)) <= 0)  
               {  
                   //Somebody disconnected , get his details and print 
                   getpeername(sd , (struct sockaddr*)&address , \
@@ -190,7 +192,9 @@ int main() {
                   //set the string terminating NULL byte on the end 
                   //of the data read 
                   buffer[valread] = '\0';  
-                  send(sd , buffer , strlen(buffer) , 0 );  
+                  char *ans = handleNewMessage(stringToRequest(buffer), course_);
+                  send(sd , ans , strlen(ans) , 0 );  
+                  //send(sd , buffer , strlen(buffer) , 0 );  
               }  
           }  
       }  
