@@ -13,25 +13,21 @@ int main() {
 	memset(&server_address, 0, sizeof(server_address));
 	server_address.sin_family = AF_INET;
 
-	// creates binary representation of server name
-	// and stores it as sin_addr
 	inet_pton(AF_INET, server_name, &server_address.sin_addr);
 
-	// htons: port in network order format
 	server_address.sin_port = htons(server_port);
 
-	// open a stream socket
+  // Abre socket para conexao
 	int sock;
 	if ((sock = socket(PF_INET, SOCK_STREAM, 0)) < 0) {
-		printf("could not create socket\n");
+		printf("Nao foi possivel criar socket\n");
 		return 1;
 	}
 
-	// TCP is connection oriented, a reliable connection
-	// **must** be established before any data is exchanged
+  // Estabelece conexao TCP com o servidor.
 	if (connect(sock, (struct sockaddr*)&server_address,
 	            sizeof(server_address)) < 0) {
-		printf("could not connect to server\n");
+		printf("Nao foi possivel conectar com o servidor\n");
 		return 1;
 	} else {
     printf("Conexao com servidor estabelecida.\n");
@@ -45,8 +41,8 @@ int main() {
   char* data_to_send = (char *)(malloc(1025 * sizeof(char)));
   request *req = (request *)(malloc(sizeof(request)));
 
-	// will remain open until the server terminates the connection
-  
+
+  // Imprime menu com opcoes.
   printf("id\tOperacao\n");
   printf("1\tlistar todos os códigos de disciplinas com seus respectivos títulos\n");
   printf("2\tdado o código de uma disciplina, retornar a ementa\n");
@@ -56,8 +52,11 @@ int main() {
   printf("6\tdado o código de uma disciplina, retornar o texto de comentário sobre a próxima aula\n");
   
   
+  // Loop da conexao
   while (1) {
     
+    // Objeto do tipo 'request' eh montado a partir das campos
+    // indicados pelo usuario.
     req->code = (char *)(malloc(50 * sizeof(char)));
     printf("Digite id da operacao: ");
     scanf("%d", &req->id);
@@ -72,12 +71,14 @@ int main() {
         req->comment[strlen(req->comment) - 1] = '\0';
       }
     }
+    // Converte request em string de char para ser enviado ao servidor.
     data_to_send = requestToString(req);
     
     
-    
+    // Envia mensagem.
     send(sock, data_to_send, strlen(data_to_send), 0);
     
+    // Recebe resposta e printa na saida padrao.
     while ((n = recv(sock, pbuffer, maxlen, 0)) > 0) {
       buffer[n] = '\0';
       printf("%s\n", buffer);
@@ -85,7 +86,7 @@ int main() {
     }
   }
 
-	// close the socket
+	// Fecha socket.
 	close(sock);
 	return 0;
 }

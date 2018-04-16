@@ -17,6 +17,8 @@ subject* createSubject(char *code, char *title, char *program, char *classroom, 
   return ret;
 }
 
+// Le do arquivo com nome file_name e retorna estrutura do tipo 'course'
+// com todos os dados de disciplinas contidas no arquivo file_name.
 course* readCourse(char *file_name) {
   subject **subjects;
   course *course_;
@@ -63,6 +65,8 @@ course* readCourse(char *file_name) {
   return course_;
 }
 
+// Recebe um objeto do tipo 'course' e retorna uma string com todas as
+// disciplinas contidas nesse objeto.
 char* getAllSubjects(course *course_) {
   char *ret;
   int len = 1;
@@ -81,6 +85,10 @@ char* getAllSubjects(course *course_) {
   return ret;
 }
 
+// Recebe objeto do tipo 'course' e codigo de uma disciplina.
+// Caso codigo informado esteja contida nas disciplinas do curso,
+// retorna string com a ementa dessa disciplina. Caso contrario retorna 
+// string informando que a materia nao existe.
 char* getProgramByCode(course *course_, char *given_code) {
   char *ret;
   for (int i = 0; i < course_->n_subjects; i++) {
@@ -121,6 +129,8 @@ char* getAllInfoByCode(course *course_, char *given_code) {
   return ret;
 }
 
+// Recebe objeto do tipo 'course' e retorna uma string com todas as
+// informacoes contidas nesse objeto.
 char* getEveryInfo(course *course_) {
   char *ret;
   int len = 1;
@@ -137,6 +147,7 @@ char* getEveryInfo(course *course_) {
   return ret;
 }
 
+// Altera objeto do tipo course adicionando comentario em materia.
 void writeComment(course *course_, char *given_code, char* comment) {
   for (int i = 0; i < course_->n_subjects; i++) {
     if (strcmp(given_code, course_->subjects[i]->code) == 0) {
@@ -147,6 +158,7 @@ void writeComment(course *course_, char *given_code, char* comment) {
   }
 }
 
+// Retorna string com comentario previamente adicionado em uma disciplina.
 char* getCommentbyCode(course *course_, char *given_code) {
   char *ret;
   for (int i = 0; i < course_->n_subjects; i++) {

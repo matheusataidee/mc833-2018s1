@@ -9,6 +9,7 @@ request* createRequest(int id, char* code) {
   return req;
 }
 
+// Converte array de char em um objeto do tipo 'request'.
 request* stringToRequest(char *req) {
   request *ret = (request *)(malloc(sizeof(request)));
   char **s = (char **)(malloc(3 * sizeof(char*)));
@@ -34,6 +35,7 @@ request* stringToRequest(char *req) {
   return ret;
 }
 
+// Converte objeto do tipo 'request' em array de char.
 char* requestToString(request *req) {
   char *ret;
   char num[12];
